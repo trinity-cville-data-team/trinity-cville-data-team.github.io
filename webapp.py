@@ -36,8 +36,10 @@ for deacon in deacons_data.iterrows():
         'lng': deacon[1][6]
     })
 
+print "Found", len(members_list), "members,", len(deacons_list), "deacons, and", len(elders_list), "elders."
 
 app = Flask(__name__)
+app._static_folder = "."
 
 @app.route("/members")
 def members():

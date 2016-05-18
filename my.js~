@@ -14,8 +14,7 @@ var map, members, elders, deacons;
           for(var i=0; i < theData.length; i++) {
               result = new google.maps.Marker({
                   position: theData[i],
-                  map: map,
-                  label: theData[i]['name']
+                  map: map
               });
           }
       }
