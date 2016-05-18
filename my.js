@@ -5,9 +5,14 @@ var map, members, elders, deacons;
       console.log("Found "+theData.length+" data points")
       if(format == "heatmap") {
           console.log("heatmap")
+          var theLatLngData = []
+          for(var i=0; i < theData.length; i++) {
+              theLatLngData.push(new google.maps.LatLng(theData[i]['lat'], theData[i]['lng']));
+          }
           result = new google.maps.visualization.HeatmapLayer({
-              data: theData,
-              map: map
+              data: theLatLngData,
+              map: map,
+              radius: 50
           });
       } else if(format == "point") {
           console.log("point")
