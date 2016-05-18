@@ -1,6 +1,30 @@
-var map, members, elders, deacons;
+var map, member_heatmap, member_points, elder_heatmap, elder_points, deacon_heatmap, deacon_points;
+  
+  function color(x) {
+      if(x == "West") {
+          return "ylw"
+      } else if(x == "Central") {
+          return "grn"
+      } else if(x == "East") {
+          return "blu"
+      } else if(x == "North") {
+          return "red"
+      } else if(x == "South") {
+          return "wht"
+      }
+  }
 
-  function plot(theData, format) {
+  function toggleHeatmap(heatmap) {
+      heatmap.setMap(heatmap.getMap() ? null : map);
+  }
+
+  function togglePoints(pts) {
+      for(var i=0; i < pts.length; i++) {
+          pts[i].setMap(pts[i].getMap() ? null : map);
+      }
+  }
+
+  function plot(theData, format, theMap, style) {
       var result
       console.log("Found "+theData.length+" data points")
       if(format == "heatmap") {
@@ -11,17 +35,18 @@ var map, members, elders, deacons;
           }
           result = new google.maps.visualization.HeatmapLayer({
               data: theLatLngData,
-              map: map,
+              map: theMap,
               radius: 50
           });
       } else if(format == "point") {
           console.log("point")
+          result = []
           for(var i=0; i < theData.length; i++) {
-              result = new google.maps.Marker({
+              result.push(new google.maps.Marker({
                   position: theData[i],
-                  map: map,
-                  label: theData[i]['name']
-              });
+                  map: theMap,
+                  icon: style(theData[i]["parish"])
+              }));
           }
       }
       return result;
@@ -37,22 +62,27 @@ var map, members, elders, deacons;
     $.getJSON(
             "/members", 
             {},
-            function(d) { members = d; plot(members, "heatmap"); }
-            );
+            function(d) { 
+                members = d; 
+                member_heatmap = plot(members, "heatmap", map, {});
+                member_points = plot(members, "point", null, function(x) {return {url: "http://maps.google.com/mapfiles/kml/paddle/blu-blank-lv.png"}});
+            });
     $.getJSON(
             "/elders",
             {},
-            function(d) { elders = d; plot(elders, "point"); }
-            );
+            function(d) { 
+                elders = d; 
+                elder_heatmap = plot(elders, "heatmap", null, {});
+                elder_points = plot(elders, "point", map, function(x) { return {url: "http://maps.google.com/mapfiles/kml/paddle/"+color(x)+"-square-lv.png"}}); 
+            });
     $.getJSON(
             "/deacons",
             {},
-            function(d) { deacons = d; plot(deacons, "point"); }
-            );
-  }
-
-  function toggleHeatmap() {
-    heatmap.setMap(heatmap.getMap() ? null : map);
+            function(d) { 
+                deacons = d; 
+                deacon_heatmap = plot(deacons, "heatmap", null, {});
+                deacon_points = plot(deacons, "point", map, function(x) { return {url: "http://maps.google.com/mapfiles/kml/paddle/"+color(x)+"-stars-lv.png"}}); 
+            });
   }
 
   function changeGradient() {
