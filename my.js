@@ -1,4 +1,7 @@
 var map, member_heatmap, member_points, elder_heatmap, elder_points, deacon_heatmap, deacon_points, parishes;
+
+// This is the single info window for showing info on any marker
+var infoWindow;
   
   function color(x) {
       if(x == "West") {
@@ -44,11 +47,21 @@ var map, member_heatmap, member_points, elder_heatmap, elder_points, deacon_heat
       } else if(format == "point") {
           result = []
           for(var i=0; i < theData.length; i++) {
-              result.push(new google.maps.Marker({
+              var marker = new google.maps.Marker({
                   position: theData[i],
                   map: theMap,
                   icon: style(theData[i]["parish"])
-              }));
+              });
+
+              google.maps.event.addListener(marker, 'click', (function(marker, i) {
+                      return function() {
+                          infoWindow.setContent(theData[i]["name"]);
+                          infoWindow.open(map, marker);
+                      }
+                  })(marker, i)
+              );
+
+              result.push(marker);
           }
       }
       return result;
@@ -60,6 +73,8 @@ var map, member_heatmap, member_points, elder_heatmap, elder_points, deacon_heat
       center: {lat: 38.0401499, lng: -78.5199934},
       mapTypeId: google.maps.MapTypeId.SATELLITE
     });
+
+    infoWindow = new google.maps.InfoWindow();
 
     parishes = new google.maps.KmlLayer({
         url: 'https://dl.dropboxusercontent.com/s/b1tw272wo0vpu22/parishes.kmz?dl=0',
