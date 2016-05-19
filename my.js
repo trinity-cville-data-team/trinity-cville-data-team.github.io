@@ -65,13 +65,14 @@ var map, member_heatmap, member_points, elder_heatmap, elder_points, deacon_heat
       mapTypeId: google.maps.MapTypeId.SATELLITE
     });
 
+    var paddle = "https://cdn.rawgit.com/trinity-cville-data-team/trinity-cville-data-team.github.io/master/";
+
     parishes = new google.maps.KmlLayer({
-        url: 'https://dl.dropboxusercontent.com/s/b1tw272wo0vpu22/parishes.kmz?dl=0',
+        url: paddle+'parishes.kmz',
         map: null,
         opacity: 0.5
     });
     
-    var paddle = "https://cdn.rawgit.com/trinity-cville-data-team/trinity-cville-data-team.github.io/master/"
     $.getJSON(
         "/members", 
         {},
