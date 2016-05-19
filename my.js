@@ -1,4 +1,7 @@
 var map, member_heatmap, member_points, elder_heatmap, elder_points, deacon_heatmap, deacon_points, parishes;
+
+// This is the single info window for showing info on any marker
+var infoWindow;
   
   function color(x) {
       if(x == "West") {
@@ -48,11 +51,21 @@ var map, member_heatmap, member_points, elder_heatmap, elder_points, deacon_heat
       } else if(format == "point") {
           result = []
           for(var i=0; i < theData.length; i++) {
-              result.push(new google.maps.Marker({
+              var marker = new google.maps.Marker({
                   position: theData[i],
                   map: theMap,
                   icon: style(theData[i]["parish"])
-              }));
+              });
+
+              google.maps.event.addListener(marker, 'click', (function(marker, i) {
+                      return function() {
+                          infoWindow.setContent(theData[i]["name"]);
+                          infoWindow.open(map, marker);
+                      }
+                  })(marker, i)
+              );
+
+              result.push(marker);
           }
       }
       return result;
@@ -65,6 +78,7 @@ var map, member_heatmap, member_points, elder_heatmap, elder_points, deacon_heat
       mapTypeId: google.maps.MapTypeId.HYBRID
     });
 
+    infoWindow = new google.maps.InfoWindow();
     var paddle = "https://cdn.rawgit.com/trinity-cville-data-team/trinity-cville-data-team.github.io/master/";
 
     parishes = new google.maps.KmlLayer({
