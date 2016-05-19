@@ -1,4 +1,4 @@
-var map, member_heatmap, member_points, elder_heatmap, elder_points, deacon_heatmap, deacon_points;
+var map, member_heatmap, member_points, elder_heatmap, elder_points, deacon_heatmap, deacon_points, parishes;
   
   function color(x) {
       if(x == "West") {
@@ -23,12 +23,14 @@ var map, member_heatmap, member_points, elder_heatmap, elder_points, deacon_heat
           pts[i].setMap(pts[i].getMap() ? null : map);
       }
   }
+  
+  function toggleParishes() {
+      parishes.setMap(parishes.getMap() ? null : map);
+  }
 
   function plot(theData, format, theMap, style) {
       var result
-      console.log("Found "+theData.length+" data points")
       if(format == "heatmap") {
-          console.log("heatmap")
           var theLatLngData = []
           for(var i=0; i < theData.length; i++) {
               theLatLngData.push(new google.maps.LatLng(theData[i]['lat'], theData[i]['lng']));
@@ -36,10 +38,10 @@ var map, member_heatmap, member_points, elder_heatmap, elder_points, deacon_heat
           result = new google.maps.visualization.HeatmapLayer({
               data: theLatLngData,
               map: theMap,
-              radius: 50
+              radius: 50,
+              opacity: 0.5
           });
       } else if(format == "point") {
-          console.log("point")
           result = []
           for(var i=0; i < theData.length; i++) {
               result.push(new google.maps.Marker({
@@ -59,30 +61,35 @@ var map, member_heatmap, member_points, elder_heatmap, elder_points, deacon_heat
       mapTypeId: google.maps.MapTypeId.SATELLITE
     });
 
+    parishes = new google.maps.KmlLayer({
+        url: 'http://trinity-cville-data-team.github.io/parishes.kmz',
+        map: map
+    });
+    var paddle = "http://maps.google.com/mapfiles/kml/paddle/"
     $.getJSON(
-            "/members", 
-            {},
-            function(d) { 
-                members = d; 
-                member_heatmap = plot(members, "heatmap", map, {});
-                member_points = plot(members, "point", null, function(x) {return {url: "http://maps.google.com/mapfiles/kml/paddle/blu-blank-lv.png"}});
-            });
+        "/members", 
+        {},
+        function(d) { 
+            members = d; 
+            member_heatmap = plot(members, "heatmap", map, {});
+            member_points = plot(members, "point", null, function(x) {return {url: paddle+"blu-blank-lv.png"}});
+        });
     $.getJSON(
-            "/elders",
-            {},
-            function(d) { 
-                elders = d; 
-                elder_heatmap = plot(elders, "heatmap", null, {});
-                elder_points = plot(elders, "point", map, function(x) { return {url: "http://maps.google.com/mapfiles/kml/paddle/"+color(x)+"-square-lv.png"}}); 
-            });
+        "/elders",
+        {},
+        function(d) { 
+            elders = d; 
+            elder_heatmap = plot(elders, "heatmap", null, {});
+            elder_points = plot(elders, "point", map, function(x) { return {url: paddle+color(x)+"-square-lv.png"}}); 
+        });
     $.getJSON(
-            "/deacons",
-            {},
-            function(d) { 
-                deacons = d; 
-                deacon_heatmap = plot(deacons, "heatmap", null, {});
-                deacon_points = plot(deacons, "point", map, function(x) { return {url: "http://maps.google.com/mapfiles/kml/paddle/"+color(x)+"-stars-lv.png"}}); 
-            });
+        "/deacons",
+        {},
+        function(d) { 
+            deacons = d; 
+            deacon_heatmap = plot(deacons, "heatmap", null, {});
+            deacon_points = plot(deacons, "point", map, function(x) { return {url: paddle+color(x)+"-stars-lv.png"}}); 
+        });
   }
 
   function changeGradient() {

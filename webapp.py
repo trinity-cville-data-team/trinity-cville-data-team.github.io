@@ -53,6 +53,10 @@ def deacons():
 def elders():
     return jsonify(elders_list)
 
+@app.route("/parishes.kmz")
+def parishes():
+    return app.send_static_file("parishes.kmz")
+
 @app.route('/')
 def root():
     return app.send_static_file('index.html')
