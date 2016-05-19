@@ -63,7 +63,7 @@ var map, member_heatmap, member_points, elder_heatmap, elder_points, deacon_heat
 
     parishes = new google.maps.KmlLayer({
         url: 'https://dl.dropboxusercontent.com/s/b1tw272wo0vpu22/parishes.kmz?dl=0',
-        map: map,
+        map: null,
         opacity: 0.5
     });
     var paddle = "http://maps.google.com/mapfiles/kml/paddle/"
