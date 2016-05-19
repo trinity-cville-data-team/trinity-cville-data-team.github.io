@@ -17,6 +17,10 @@ var infoWindow;
       }
   }
 
+  function parish_color(x) {
+      return x.toLowerCase().substring(0,3);
+  }
+
   function toggleHeatmap(heatmap) {
       heatmap.setMap(heatmap.getMap() ? null : map);
   }
@@ -75,20 +79,21 @@ var infoWindow;
     });
 
     infoWindow = new google.maps.InfoWindow();
+    var paddle = "https://cdn.rawgit.com/trinity-cville-data-team/trinity-cville-data-team.github.io/master/";
 
     parishes = new google.maps.KmlLayer({
-        url: 'https://dl.dropboxusercontent.com/s/b1tw272wo0vpu22/parishes.kmz?dl=0',
+        url: paddle+'parishes.kmz',
         map: null,
         opacity: 0.5
     });
-    var paddle = "http://maps.google.com/mapfiles/kml/paddle/"
+    
     $.getJSON(
         "/members", 
         {},
         function(d) { 
             members = d; 
             member_heatmap = plot(members, "heatmap", map, {});
-            member_points = plot(members, "point", null, function(x) {return {url: paddle+"blu-blank-lv.png"}});
+            member_points = plot(members, "point", null, function(x) {return {url: paddle+'M.png'}});
         });
     $.getJSON(
         "/elders",
@@ -96,7 +101,7 @@ var infoWindow;
         function(d) { 
             elders = d; 
             elder_heatmap = plot(elders, "heatmap", null, {});
-            elder_points = plot(elders, "point", map, function(x) { return {url: paddle+color(x)+"-square-lv.png"}}); 
+            elder_points = plot(elders, "point", map, function(x) { return {url: paddle+"E-"+parish_color(x)+".png"}}); 
         });
     $.getJSON(
         "/deacons",
@@ -104,7 +109,7 @@ var infoWindow;
         function(d) { 
             deacons = d; 
             deacon_heatmap = plot(deacons, "heatmap", null, {});
-            deacon_points = plot(deacons, "point", map, function(x) { return {url: paddle+color(x)+"-stars-lv.png"}}); 
+            deacon_points = plot(deacons, "point", map, function(x) { return {url: paddle+"D-"+parish_color(x)+".png"}}); 
         });
   }
 
