@@ -62,7 +62,7 @@ var map, member_heatmap, member_points, elder_heatmap, elder_points, deacon_heat
     map = new google.maps.Map(document.getElementById('map'), {
       zoom: 13,
       center: {lat: 38.0401499, lng: -78.5199934},
-      mapTypeId: google.maps.MapTypeId.SATELLITE
+      mapTypeId: google.maps.MapTypeId.HYBRID
     });
 
     var paddle = "https://cdn.rawgit.com/trinity-cville-data-team/trinity-cville-data-team.github.io/master/";
