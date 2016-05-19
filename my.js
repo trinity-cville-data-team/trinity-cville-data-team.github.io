@@ -83,8 +83,7 @@ var infoWindow;
 
     parishes = new google.maps.KmlLayer({
         url: paddle+'parishes.kmz',
-        map: null,
-        opacity: 0.5
+        map: null
     });
     
     $.getJSON(
