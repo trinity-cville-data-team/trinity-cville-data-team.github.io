@@ -1,4 +1,5 @@
 from flask import Flask, request
+import re
 from json import dumps as jsonify
 import sys
 import pandas as pd
@@ -36,6 +37,9 @@ for deacon in deacons_data.iterrows():
         'lng': deacon[1][6]
     })
 
+names_lowercase_to_uppercase = {x['name'].lower(): x['name'] for x in deacons_list+elders_list+members_list}
+info_for_person = {x['name']: x for x in deacons_list+elders_list+members_list}
+
 print "Found", len(members_list), "members,", len(deacons_list), "deacons, and", len(elders_list), "elders."
 
 app = Flask(__name__)
@@ -52,6 +56,20 @@ def deacons():
 @app.route("/elders")
 def elders():
     return jsonify(elders_list)
+
+def autocomplete_for(string):
+    return [v for k, v in names_lowercase_to_uppercase.iteritems() if all([y in k for y in string.lower().split()])]
+
+@app.route("/autocomplete")
+def autocomplete():
+    return jsonify(autocomplete_for(request.args.get("q")))
+
+@app.route("/search")
+def search():
+    search_term = request.args.get("q")
+    results = autocomplete_for(search_term)
+    if len(results) > 0:
+        return jsonify(info_for_person[results[0]])
 
 @app.route("/parishes.kmz")
 def parishes():
