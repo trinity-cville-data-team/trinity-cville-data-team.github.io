@@ -1,11 +1,13 @@
 <html>
     <head>
         <link rel="stylesheet" type="text/css" href="my.css"></style>
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
         <script src="//code.jquery.com/jquery-1.12.0.min.js"></script>
+        <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
         <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
     </head>
     <body>
-        <div id="floating-panel">
+        <div class="floating-panel">
             <button onclick="toggleHeatmap(member_heatmap)">Member Heatmap</button>
             <button onclick="togglePoints(member_points)">Member Points</button>
             <button onclick="toggleHeatmap(deacon_heatmap)">Deacon Heatmap</button>
@@ -13,6 +15,9 @@
             <button onclick="toggleHeatmap(elder_heatmap)">Elder Heatmap</button>
             <button onclick="togglePoints(elder_points)">Elder Points</button>
             <button onclick="toggleParishes()">Parishes</button>
+        </div>
+        <div class="floating-panel-right">
+            <input id="autocomplete">
         </div>
         <div id='map'></div>
         <script src="my.js"></script>

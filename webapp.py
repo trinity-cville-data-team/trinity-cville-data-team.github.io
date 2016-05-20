@@ -12,12 +12,22 @@ elders_data = pd.read_csv(elders_file)
 deacons_data = pd.read_csv(deacons_file)
 
 members_list = []
+grouped_members_dict = {}
 for member in members_data.iterrows():
+    lat = member[1][6]
+    lng = member[1][7]
     members_list.append({
         'name': member[1][1],
-        'lat':  member[1][6],
-        'lng': member[1][7]
+        'lat':  lat,
+        'lng': lng
     })
+    hack_key = str(lat)+","+str(lng)
+    grouped_members_dict[hack_key] = grouped_members_dict.get(hack_key, {'lat': lat, 'lng': lng})
+    if 'name' in grouped_members_dict[hack_key]:
+        grouped_members_dict[hack_key]['name'] += "<br />"+member[1][1]
+    else:
+        grouped_members_dict[hack_key]['name'] = member[1][1]
+grouped_members_list = list(grouped_members_dict.values())
 
 elders_list = []
 for elder in elders_data.iterrows():
@@ -47,7 +57,7 @@ app._static_folder = "."
 
 @app.route("/members")
 def members():
-    return jsonify(members_list)
+    return jsonify(grouped_members_list)
 
 @app.route("/deacons")
 def deacons():
@@ -62,11 +72,11 @@ def autocomplete_for(string):
 
 @app.route("/autocomplete")
 def autocomplete():
-    return jsonify(autocomplete_for(request.args.get("q")))
+    return jsonify(autocomplete_for(request.args.get("term")))
 
 @app.route("/search")
 def search():
-    search_term = request.args.get("q")
+    search_term = request.args.get("term")
     results = autocomplete_for(search_term)
     if len(results) > 0:
         return jsonify(info_for_person[results[0]])

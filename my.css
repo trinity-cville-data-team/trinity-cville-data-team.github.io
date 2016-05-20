@@ -12,7 +12,7 @@
     opacity: 0.4;
   }
 
-  #floating-panel {
+  .floating-panel {
     position: absolute;
     top: 10px;
     left: 25%;
@@ -25,12 +25,35 @@
     line-height: 30px;
     padding-left: 10px;
   }
-  #floating-panel {
+  .fpr {
     background-color: #fff;
     border: 1px solid #999;
-    left: 25%;
     padding: 5px;
-    position: absolute;
-    top: 10px;
-    z-index: 5;
   }
+  .floating-panel-right {
+    position: absolute;
+    top: 20px;
+    z-index: 5;
+    right: 10px;
+  }
+  .ui-menu-item {
+    font-size: 12pt;
+  }
+  .ui-autocomplete {
+    width: 200px;
+    max-height: 50%;
+    overflow: scroll;
+  }
+  #autocomplete {
+    width: 200px;
+  }
+  #autocomplete:active {
+    box-shadow: 0 0 30px #000000
+  }
+  #autocomplete:focus {
+    box-shadow: 0 0 30px #000000
+  }
+  #autocomplete:hover {
+    background: #eee
+  }
+  

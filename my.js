@@ -1,4 +1,4 @@
-var map, member_heatmap, member_points, elder_heatmap, elder_points, deacon_heatmap, deacon_points, parishes;
+var map, member_heatmap, member_points, elder_heatmap, elder_points, deacon_heatmap, deacon_points, parishes, marker;
 
 // This is the single info window for showing info on any marker
 var infoWindow;
@@ -51,7 +51,7 @@ var infoWindow;
       } else if(format == "point") {
           result = []
           for(var i=0; i < theData.length; i++) {
-              var marker = new google.maps.Marker({
+              marker = new google.maps.Marker({
                   position: theData[i],
                   map: theMap,
                   icon: style(theData[i]["parish"])
@@ -59,6 +59,7 @@ var infoWindow;
 
               google.maps.event.addListener(marker, 'click', (function(marker, i) {
                       return function() {
+                          infoWindow.setOptions({options: {pixelOffset: new google.maps.Size(0,0)}});
                           infoWindow.setContent(theData[i]["name"]);
                           infoWindow.open(map, marker);
                       }
@@ -110,6 +111,7 @@ var infoWindow;
             deacon_heatmap = plot(deacons, "heatmap", null, {});
             deacon_points = plot(deacons, "point", map, function(x) { return {url: paddle+"D-"+parish_color(x)+".png"}}); 
         });
+    $( "#autocomplete" ).autocomplete({source: "autocomplete"});
   }
 
   function changeGradient() {
@@ -139,3 +141,19 @@ var infoWindow;
   function changeOpacity() {
     heatmap.set('opacity', heatmap.get('opacity') ? null : 0.2);
   }
+$("#autocomplete").keydown(function(event) {
+    if(event.keyCode == 13) {
+       $.getJSON(
+           "/search",
+           {term: $('#autocomplete').val()},
+           function(d) {
+               map.setCenter({lat: d.lat, lng: d.lng});
+               map.setZoom(17);
+               infoWindow.setContent(d.name);
+               infoWindow.setPosition({lat: d.lat, lng: d.lng});
+               infoWindow.setOptions({options: {pixelOffset: new google.maps.Size(0,-16)}});
+               infoWindow.open(map);
+          }
+        );
+    }
+});
